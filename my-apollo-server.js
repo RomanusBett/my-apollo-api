@@ -3,6 +3,7 @@ const { ApolloServer, gql } = require('apollo-server-express');
 const fetch = require('node-fetch');
 
 const app = express();
+app.use(cors());
 
 const typeDefs = gql`
   type Query {
@@ -42,15 +43,4 @@ const resolvers = {
 
 const server = new ApolloServer({ typeDefs, resolvers });
 
-async function startServer() {
-  await server.start();
-  server.applyMiddleware({ app });
-  
-  const PORT = process.env.PORT || 4000;
-
-  app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}${server.graphqlPath}`);
-  });
-}
-
-startServer();
+module.exports = server.createHandler();
