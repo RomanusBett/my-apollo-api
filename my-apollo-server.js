@@ -50,3 +50,4 @@ module.exports = cors((req, res) => {
   }
   return server.createHandler()(req, res);
 });
+
