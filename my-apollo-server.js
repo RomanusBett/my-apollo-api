@@ -3,6 +3,7 @@ const { ApolloServer, gql } = require('apollo-server-express');
 const fetch = require('node-fetch');
 
 const app = express();
+app.use(cors());
 
 const typeDefs = gql`
   type Query {
