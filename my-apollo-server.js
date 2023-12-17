@@ -2,9 +2,9 @@ const { ApolloServer, gql } = require('apollo-server-micro');
 const microCors = require('micro-cors');
 const fetch = require('node-fetch');
 
-const cors = microCors();
-=======
-const app = express();
+const cors = microCors({
+  allowMethods: ['GET', 'POST', 'OPTIONS'],
+});
 
 const typeDefs = gql`
   type Query {
@@ -44,5 +44,10 @@ const resolvers = {
 
 const server = new ApolloServer({ typeDefs, resolvers });
 
-module.exports = cors((req, res) => server.createHandler()(req, res));
+module.exports = cors((req, res) => {
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  return server.createHandler()(req, res);
+});
 
