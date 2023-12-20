@@ -1,11 +1,8 @@
-const { ApolloServer, gql } = require('apollo-server-micro');
-const microCors = require('micro-cors');
+const express = require('express');
+const { ApolloServer, gql } = require('apollo-server-express');
 const fetch = require('node-fetch');
 
-const cors = microCors({
-  allowMethods: ['GET', 'POST', 'OPTIONS'],
-  allowOrigins: ['*'],
-});
+const app = express();
 
 const typeDefs = gql`
   type Query {
@@ -45,9 +42,15 @@ const resolvers = {
 
 const server = new ApolloServer({ typeDefs, resolvers });
 
-module.exports = cors((req, res) => {
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
-  return server.createHandler()(req, res);
-});
+async function startServer() {
+  await server.start();
+  server.applyMiddleware({ app });
+  
+  const PORT = process.env.PORT || 4000;
+
+  app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}${server.graphqlPath}`);
+  });
+}
+
+startServer();
