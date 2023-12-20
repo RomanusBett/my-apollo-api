@@ -4,6 +4,7 @@ const fetch = require('node-fetch');
 
 const cors = microCors({
   allowMethods: ['GET', 'POST', 'OPTIONS'],
+  allowOrigins: ['http://localhost:3000'],
 });
 
 const typeDefs = gql`
